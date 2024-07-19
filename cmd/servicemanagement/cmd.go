@@ -9,5 +9,7 @@ func Cmd() *cobra.Command {
 		Use:   "service-management",
 		Short: "Publish and manage information about services with the Google Service Management API",
 	}
+	cmd.AddCommand(getServiceCmd())
+	cmd.AddCommand(listServicesCmd())
 	return cmd
 }
