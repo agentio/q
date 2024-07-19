@@ -9,5 +9,13 @@ func Cmd() *cobra.Command {
 		Use:   "api-keys",
 		Short: "Manage API keys with the Google API Keys API",
 	}
+	cmd.AddCommand(createKeyCmd())
+	cmd.AddCommand(deleteKeyCmd())
+	cmd.AddCommand(getKeyStringCmd())
+	cmd.AddCommand(getKeyCmd())
+	cmd.AddCommand(listKeysCmd())
+	cmd.AddCommand(lookupKeyCmd())
+	cmd.AddCommand(undeleteKeyCmd())
+	cmd.AddCommand(updateKeyCmd())
 	return cmd
 }
