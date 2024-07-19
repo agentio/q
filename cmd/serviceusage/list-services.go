@@ -12,8 +12,9 @@ import (
 
 func listServicesCmd() *cobra.Command {
 	var format string
+	var filter string
 	cmd := &cobra.Command{
-		Use:   "list-services",
+		Use:   "list-services PARENT",
 		Short: "List services",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -26,6 +27,7 @@ func listServicesCmd() *cobra.Command {
 
 			response := c.ListServices(ctx, &serviceusagepb.ListServicesRequest{
 				Parent: args[0],
+				Filter: filter,
 			})
 			if format == "json" {
 				fmt.Fprintf(cmd.OutOrStdout(), "[")
@@ -59,5 +61,6 @@ func listServicesCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&format, "format", "json", "output format")
+	cmd.Flags().StringVar(&filter, "filter", "state:ENABLED", "filter")
 	return cmd
 }
