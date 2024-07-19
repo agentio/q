@@ -11,11 +11,11 @@ import (
 )
 
 func listServicesCmd() *cobra.Command {
-	var project string
 	var output string
 	cmd := &cobra.Command{
-		Use:   "list-services",
+		Use:   "list-services PROJECTID",
 		Short: "List services",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			c, err := servicemanagement.NewServiceManagerClient(ctx)
@@ -23,9 +23,8 @@ func listServicesCmd() *cobra.Command {
 				return nil
 			}
 			defer c.Close()
-
 			response := c.ListServices(ctx, &servicemanagementpb.ListServicesRequest{
-				ProducerProjectId: project,
+				ProducerProjectId: args[0],
 			})
 			if output == "json" {
 				fmt.Fprintf(cmd.OutOrStdout(), "[")
@@ -57,7 +56,6 @@ func listServicesCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&project, "project", "p", "", "producer project")
 	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
 	return cmd
 }
