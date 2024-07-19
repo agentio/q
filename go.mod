@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/apikeys v1.1.10
 	cloud.google.com/go/servicemanagement v1.9.11
 	cloud.google.com/go/serviceusage v1.8.9
+	cloud.google.com/go/translate v1.10.5
 	github.com/spf13/cobra v1.8.1
 	google.golang.org/api v0.188.0
 	google.golang.org/grpc v1.64.1
