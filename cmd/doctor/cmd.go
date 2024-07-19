@@ -44,6 +44,13 @@ func action(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	fmt.Printf("run/region = %s\n", runregion)
+	// an ADC token must be available
+	fmt.Printf("Checking application default credentials...\n")
+	token, err := gcloud.GetADCToken(verbose)
+	if err != nil {
+		return fmt.Errorf("unable to get application default credentials (%s)", err)
+	}
+	fmt.Printf("token = %s[REDACTED]\n", token[0:5])
 	fmt.Printf("Everything looks good!\n")
 	return nil
 }

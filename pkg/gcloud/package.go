@@ -68,3 +68,15 @@ type Properties struct {
 type Property struct {
 	Value string `json:"value"`
 }
+
+func GetADCToken(verbose bool) (string, error) {
+	output, err := exec.Command("gcloud", "auth", "application-default", "print-access-token").Output()
+	if err != nil {
+		return "", err
+	}
+	if verbose {
+		log.Printf("%s", string(output))
+	}
+	token := string(output)
+	return token, nil
+}
