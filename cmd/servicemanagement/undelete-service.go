@@ -6,7 +6,7 @@ import (
 )
 
 func undeleteServiceCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "undelete-service",
 		Short: "Undelete service",
@@ -21,6 +21,6 @@ func undeleteServiceCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

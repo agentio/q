@@ -6,7 +6,7 @@ import (
 )
 
 func submitConfigSourceCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "submit-config-source",
 		Short: "Submit config source",
@@ -21,6 +21,6 @@ func submitConfigSourceCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

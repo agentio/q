@@ -6,7 +6,7 @@ import (
 )
 
 func createServiceConfigCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "create-service-config",
 		Short: "Create service config",
@@ -21,6 +21,6 @@ func createServiceConfigCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

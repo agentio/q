@@ -5,7 +5,7 @@ import (
 )
 
 func undeleteKeyCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "undelete-key",
 		Short: "Undelete key",
@@ -15,6 +15,6 @@ func undeleteKeyCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

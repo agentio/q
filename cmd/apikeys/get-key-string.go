@@ -5,7 +5,7 @@ import (
 )
 
 func getKeyStringCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "get-key-string",
 		Short: "Get key string",
@@ -15,6 +15,6 @@ func getKeyStringCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

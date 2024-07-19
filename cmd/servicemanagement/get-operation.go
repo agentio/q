@@ -6,7 +6,7 @@ import (
 )
 
 func getOperationCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "get-operation",
 		Short: "Get operation",
@@ -21,6 +21,6 @@ func getOperationCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

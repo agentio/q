@@ -3,7 +3,7 @@ package serviceusage
 import "github.com/spf13/cobra"
 
 func batchGetServicesCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "batch-get-services",
 		Short: "Batch get services",
@@ -13,6 +13,6 @@ func batchGetServicesCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

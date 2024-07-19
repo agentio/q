@@ -5,7 +5,7 @@ import (
 )
 
 func updateKeyCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "update-key",
 		Short: "Update key",
@@ -15,6 +15,6 @@ func updateKeyCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

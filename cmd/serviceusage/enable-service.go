@@ -10,7 +10,7 @@ import (
 )
 
 func enableServiceCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "enable-service",
 		Short: "Enable service",
@@ -28,7 +28,7 @@ func enableServiceCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if output == "json" {
+			if format == "json" {
 				metadata, err := response.Metadata()
 				if err != nil {
 					return err
@@ -42,6 +42,6 @@ func enableServiceCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

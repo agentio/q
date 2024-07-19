@@ -11,7 +11,7 @@ import (
 )
 
 func listServicesCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "list-services",
 		Short: "List services",
@@ -27,7 +27,7 @@ func listServicesCmd() *cobra.Command {
 			response := c.ListServices(ctx, &serviceusagepb.ListServicesRequest{
 				Parent: args[0],
 			})
-			if output == "json" {
+			if format == "json" {
 				fmt.Fprintf(cmd.OutOrStdout(), "[")
 			}
 			first := true
@@ -38,7 +38,7 @@ func listServicesCmd() *cobra.Command {
 				} else if err != nil {
 					return err
 				}
-				if output == "json" {
+				if format == "json" {
 					if first {
 						first = false
 					} else {
@@ -51,13 +51,13 @@ func listServicesCmd() *cobra.Command {
 					fmt.Fprintf(cmd.OutOrStdout(), "%s", string(b))
 				}
 			}
-			if output == "json" {
+			if format == "json" {
 				fmt.Fprintf(cmd.OutOrStdout(), "]\n")
 			}
 
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }

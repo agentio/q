@@ -11,7 +11,7 @@ import (
 )
 
 func listKeysCmd() *cobra.Command {
-	var output string
+	var format string
 	cmd := &cobra.Command{
 		Use:   "list-keys PROJECT",
 		Short: "List keys",
@@ -34,7 +34,7 @@ func listKeysCmd() *cobra.Command {
 				if err != nil {
 					return err
 				}
-				if output == "json" {
+				if format == "json" {
 					b, err := protojson.Marshal(response)
 					if err != nil {
 						return err
@@ -49,6 +49,6 @@ func listKeysCmd() *cobra.Command {
 			return nil
 		},
 	}
-	cmd.Flags().StringVarP(&output, "output", "o", "json", "output format")
+	cmd.Flags().StringVar(&format, "format", "json", "output format")
 	return cmd
 }
