@@ -20,7 +20,7 @@ func listServiceConfigsCmd() *cobra.Command {
 			ctx := cmd.Context()
 			c, err := servicemanagement.NewServiceManagerClient(ctx)
 			if err != nil {
-				return nil
+				return err
 			}
 			defer c.Close()
 			response := c.ListServiceConfigs(ctx, &servicemanagementpb.ListServiceConfigsRequest{

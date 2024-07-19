@@ -19,7 +19,7 @@ func getServiceRolloutCmd() *cobra.Command {
 			ctx := cmd.Context()
 			c, err := servicemanagement.NewServiceManagerClient(ctx)
 			if err != nil {
-				return nil
+				return err
 			}
 			defer c.Close()
 			response, err := c.GetServiceRollout(ctx, &servicemanagementpb.GetServiceRolloutRequest{
