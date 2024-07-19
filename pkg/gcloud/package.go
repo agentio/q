@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"os/exec"
+	"strings"
 )
 
 func GetInfo(verbose bool) (*Info, error) {
@@ -78,5 +79,6 @@ func GetADCToken(verbose bool) (string, error) {
 		log.Printf("%s", string(output))
 	}
 	token := string(output)
+	token = strings.TrimSpace(token)
 	return token, nil
 }
