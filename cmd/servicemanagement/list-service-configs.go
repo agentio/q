@@ -13,7 +13,7 @@ import (
 func listServiceConfigsCmd() *cobra.Command {
 	var format string
 	cmd := &cobra.Command{
-		Use:   "list-service-configs",
+		Use:   "list-service-configs SERVICE",
 		Short: "List service configs",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
