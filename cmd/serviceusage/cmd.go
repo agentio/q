@@ -9,5 +9,11 @@ func Cmd() *cobra.Command {
 		Use:   "service-usage",
 		Short: "Manage usage of APIs with the Google Service Usage API",
 	}
+	cmd.AddCommand(batchEnableServicesCmd())
+	cmd.AddCommand(batchGetServicesCmd())
+	cmd.AddCommand(disableServiceCmd())
+	cmd.AddCommand(enableServiceCmd())
+	cmd.AddCommand(getServiceCmd())
+	cmd.AddCommand(listServicesCmd())
 	return cmd
 }

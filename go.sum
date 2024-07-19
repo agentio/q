@@ -15,6 +15,8 @@ cloud.google.com/go/longrunning v0.5.9 h1:haH9pAuXdPAMqHvzX0zlWQigXT7B0+CL4/2nXX
 cloud.google.com/go/longrunning v0.5.9/go.mod h1:HD+0l9/OOW0za6UWdKJtXoFAX/BGg/3Wj8p10NeWF7c=
 cloud.google.com/go/servicemanagement v1.9.11 h1:/jHMWhNNaf4gya2yVV2HA9lWFA9Lbs2VuKhUiKpIxBs=
 cloud.google.com/go/servicemanagement v1.9.11/go.mod h1:23r90SfVctzw6J6u9M5+Au0ZuI9wbyMT2E2ufOo803o=
+cloud.google.com/go/serviceusage v1.8.9 h1:tBA3Yw/0Y6v9ZIvOtT0FlSncnD79+TbzMsszeCbs/d0=
+cloud.google.com/go/serviceusage v1.8.9/go.mod h1:w48m20qFSSbb3+TgkhiS8V8HpCzsAdPPjqM3idqp3tw=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
