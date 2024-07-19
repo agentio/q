@@ -7,7 +7,7 @@ import (
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "logging",
-		Short: "Write and manage log entries with the Google Cloud Logging API",
+		Short: "Write and manage log entries with the Cloud Logging API",
 	}
 	return cmd
 }

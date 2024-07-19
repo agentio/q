@@ -7,7 +7,7 @@ import (
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "monitoring",
-		Short: "Monitor services with the Google Cloud Monitoring API",
+		Short: "Monitor services with the Cloud Monitoring API",
 	}
 	return cmd
 }

@@ -7,7 +7,7 @@ import (
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "api-keys",
-		Short: "Manage API keys with the Google API Keys API",
+		Short: "Manage API keys with the API Keys API",
 	}
 	cmd.AddCommand(createKeyCmd())
 	cmd.AddCommand(deleteKeyCmd())

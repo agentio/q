@@ -7,7 +7,7 @@ import (
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "service-management",
-		Short: "Manage service descriptions with the Google Service Management API",
+		Short: "Manage service descriptions with the Service Management API",
 	}
 	cmd.AddCommand(createServiceCmd())
 	cmd.AddCommand(createServiceConfigCmd())

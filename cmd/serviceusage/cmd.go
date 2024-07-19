@@ -7,7 +7,7 @@ import (
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "service-usage",
-		Short: "Manage usage of APIs with the Google Service Usage API",
+		Short: "Manage usage of APIs with the Service Usage API",
 	}
 	cmd.AddCommand(batchEnableServicesCmd())
 	cmd.AddCommand(batchGetServicesCmd())

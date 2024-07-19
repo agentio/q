@@ -16,7 +16,7 @@ func Cmd() *cobra.Command {
 	var parent string
 	cmd := &cobra.Command{
 		Use:   "translate TEXT",
-		Short: "Translate with the Google Cloud Translation API",
+		Short: "Translate with the Cloud Translation API",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
