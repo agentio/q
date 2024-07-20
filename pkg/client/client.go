@@ -6,7 +6,7 @@ import (
 	"crypto/x509"
 
 	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
-	"github.com/agentio/q/pkg/gcloud"
+	"github.com/agentio/q/pkg/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
@@ -29,7 +29,7 @@ func newConn(host string) (*grpc.ClientConn, error) {
 }
 
 func ApiKeysClient(ctx context.Context, project string) (apikeyspb.ApiKeysClient, context.Context, error) {
-	token, err := gcloud.GetADCToken(false)
+	token, err := config.GetADCToken(false)
 	if err != nil {
 		return nil, nil, err
 	}
