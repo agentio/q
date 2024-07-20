@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 
 	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
 	"golang.org/x/oauth2/google"
@@ -28,20 +29,26 @@ func newConn(host string) (*grpc.ClientConn, error) {
 	return grpc.NewClient(host, opts...)
 }
 
-func getApplicationDefaultToken(ctx context.Context) (string, error) {
-	tokenSource, err := google.DefaultTokenSource(ctx)
-	if err != nil {
-		return "", err
-	}
-	t, err := tokenSource.Token()
-	if err != nil {
-		return "", err
-	}
-	return t.AccessToken, nil
+type Credentials struct {
+	QuotaProjectID string `json:"quota_project_id"`
 }
 
-func ApiKeysClient(ctx context.Context, project string) (apikeyspb.ApiKeysClient, context.Context, error) {
-	token, err := getApplicationDefaultToken(ctx)
+func getADC(ctx context.Context) (string, string, error) {
+	creds, err := google.FindDefaultCredentials(ctx)
+	if err != nil {
+		return "", "", err
+	}
+	var credentials Credentials
+	json.Unmarshal(creds.JSON, &credentials)
+	t, err := creds.TokenSource.Token()
+	if err != nil {
+		return "", "", err
+	}
+	return t.AccessToken, credentials.QuotaProjectID, nil
+}
+
+func ApiKeysClient(ctx context.Context) (apikeyspb.ApiKeysClient, context.Context, error) {
+	token, project, err := getADC(ctx)
 	if err != nil {
 		return nil, nil, err
 	}

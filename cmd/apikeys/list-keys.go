@@ -18,12 +18,10 @@ func listKeysCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			project := args[0]
-
-			c, ctx, err := client.ApiKeysClient(cmd.Context(), project)
+			c, ctx, err := client.ApiKeysClient(cmd.Context())
 			if err != nil {
 				return err
 			}
-
 			nextPageToken := ""
 			for {
 				response, err := c.ListKeys(ctx, &apikeyspb.ListKeysRequest{
