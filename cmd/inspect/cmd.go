@@ -10,7 +10,6 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
-	"gopkg.in/yaml.v3"
 )
 
 func Cmd() *cobra.Command {
@@ -40,12 +39,7 @@ func Cmd() *cobra.Command {
 				}
 				fmt.Printf("%s", string(s))
 			} else {
-				n, err := encoding.NodeForMessage(&descriptors)
-				if err != nil {
-					return err
-				}
-				encoding.StyleForYAML(n)
-				b, err := yaml.Marshal(n)
+				b, err := encoding.MarshalYAML(&descriptors)
 				if err != nil {
 					return err
 				}

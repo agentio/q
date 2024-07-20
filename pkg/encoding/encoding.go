@@ -110,7 +110,7 @@ func ExtractType(node *yaml.Node) string {
 	return ""
 }
 
-func ParseYaml(bytes []byte) (proto.Message, error) {
+func UnmarshalYaml(bytes []byte) (proto.Message, error) {
 	var node yaml.Node
 	err := yaml.Unmarshal(bytes, &node)
 	if err != nil {
@@ -132,4 +132,13 @@ func ParseYaml(bytes []byte) (proto.Message, error) {
 		return &service, nil
 	}
 	return nil, fmt.Errorf("unsupported type %s", typeString)
+}
+
+func MarshalYAML(m proto.Message) ([]byte, error) {
+	n, err := NodeForMessage(m)
+	if err != nil {
+		return nil, err
+	}
+	StyleForYAML(n)
+	return yaml.Marshal(n)
 }

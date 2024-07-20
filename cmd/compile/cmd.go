@@ -24,7 +24,7 @@ func Cmd() *cobra.Command {
 					return err
 				}
 
-				message, err := encoding.ParseYaml(bytes)
+				message, err := encoding.UnmarshalYaml(bytes)
 				if err != nil {
 					return err
 				}

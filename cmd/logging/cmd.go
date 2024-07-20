@@ -11,3 +11,5 @@ func Cmd() *cobra.Command {
 	}
 	return cmd
 }
+
+// https://github.com/googleapis/google-cloud-go/blob/main/logging/apiv2/logging_client.go

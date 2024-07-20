@@ -17,7 +17,8 @@ import (
 
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "q",
+		Use:   "q",
+		Short: "Manage APIs with Service Infrastructure",
 	}
 	cmd.AddCommand(apikeys.Cmd())
 	cmd.AddCommand(inspect.Cmd())
