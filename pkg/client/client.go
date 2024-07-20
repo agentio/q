@@ -7,7 +7,9 @@ import (
 	"encoding/json"
 
 	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
+	longrunning "cloud.google.com/go/longrunning/autogen"
 	"golang.org/x/oauth2/google"
+	"google.golang.org/api/option"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
@@ -59,5 +61,23 @@ func ApiKeysClient(ctx context.Context) (apikeyspb.ApiKeysClient, context.Contex
 		return nil, nil, err
 	}
 	c := apikeyspb.NewApiKeysClient(conn)
+	return c, ctx, nil
+}
+
+func ApiKeysLROClient(ctx context.Context) (*longrunning.OperationsClient, context.Context, error) {
+	token, project, err := getADC(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+	ctx = metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+token)
+	ctx = metadata.AppendToOutgoingContext(ctx, "x-goog-user-project", project)
+	conn, err := newConn("apikeys.googleapis.com:443")
+	if err != nil {
+		return nil, nil, err
+	}
+	c, err := longrunning.NewOperationsClient(ctx, option.WithGRPCConn(conn))
+	if err != nil {
+		return nil, nil, err
+	}
 	return c, ctx, nil
 }

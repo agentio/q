@@ -13,6 +13,7 @@ func Cmd() *cobra.Command {
 	cmd.AddCommand(deleteKeyCmd())
 	cmd.AddCommand(getKeyStringCmd())
 	cmd.AddCommand(getKeyCmd())
+	cmd.AddCommand(getOperationCmd())
 	cmd.AddCommand(listKeysCmd())
 	cmd.AddCommand(lookupKeyCmd())
 	cmd.AddCommand(undeleteKeyCmd())

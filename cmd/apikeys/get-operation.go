@@ -3,31 +3,31 @@ package apikeys
 import (
 	"fmt"
 
-	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
+	"cloud.google.com/go/longrunning/autogen/longrunningpb"
 	"github.com/agentio/q/pkg/client"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-func deleteKeyCmd() *cobra.Command {
+func getOperationCmd() *cobra.Command {
 	var format string
 	cmd := &cobra.Command{
-		Use:   "delete-key",
-		Short: "Delete key",
+		Use:   "get-operation OPERATION",
+		Short: "Get operation",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			c, ctx, err := client.ApiKeysClient(cmd.Context())
+			c, ctx, err := client.ApiKeysLROClient(cmd.Context())
 			if err != nil {
 				return err
 			}
-			operation, err := c.DeleteKey(ctx, &apikeyspb.DeleteKeyRequest{
+			response, err := c.GetOperation(ctx, &longrunningpb.GetOperationRequest{
 				Name: args[0],
 			})
 			if err != nil {
 				return err
 			}
 			if format == "json" {
-				b, err := protojson.Marshal(operation)
+				b, err := protojson.Marshal(response)
 				if err != nil {
 					return err
 				}

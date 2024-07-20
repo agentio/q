@@ -17,7 +17,6 @@ func listKeysCmd() *cobra.Command {
 		Short: "List keys",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			project := args[0]
 			c, ctx, err := client.ApiKeysClient(cmd.Context())
 			if err != nil {
 				return err
@@ -25,7 +24,7 @@ func listKeysCmd() *cobra.Command {
 			nextPageToken := ""
 			for {
 				response, err := c.ListKeys(ctx, &apikeyspb.ListKeysRequest{
-					Parent:    "projects/" + project + "/locations/global",
+					Parent:    "projects/" + args[0] + "/locations/global",
 					PageSize:  2,
 					PageToken: nextPageToken,
 				})
