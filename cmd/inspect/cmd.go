@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/agentio/q/pkg/encoding"
+	"github.com/agent-kit/q/pkg/encoding"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"

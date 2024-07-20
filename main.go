@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/agentio/q/cmd"
+	"github.com/agent-kit/q/cmd"
 )
 
 func main() {

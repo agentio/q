@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/agentio/q/pkg/gcloud"
+	"github.com/agent-kit/q/pkg/gcloud"
 )
 
 func readCachedToken() (*Token, error) {
