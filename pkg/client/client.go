@@ -6,7 +6,7 @@ import (
 	"crypto/x509"
 
 	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
-	"github.com/agentio/q/pkg/config"
+	"golang.org/x/oauth2/google"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
@@ -28,8 +28,20 @@ func newConn(host string) (*grpc.ClientConn, error) {
 	return grpc.NewClient(host, opts...)
 }
 
+func getApplicationDefaultToken(ctx context.Context) (string, error) {
+	tokenSource, err := google.DefaultTokenSource(ctx)
+	if err != nil {
+		return "", err
+	}
+	t, err := tokenSource.Token()
+	if err != nil {
+		return "", err
+	}
+	return t.AccessToken, nil
+}
+
 func ApiKeysClient(ctx context.Context, project string) (apikeyspb.ApiKeysClient, context.Context, error) {
-	token, err := config.GetADCToken(false)
+	token, err := getApplicationDefaultToken(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
