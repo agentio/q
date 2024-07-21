@@ -1,7 +1,7 @@
 package compile
 
 import (
-	"log"
+	"slices"
 	"strings"
 
 	"google.golang.org/genproto/googleapis/api/annotations"
@@ -21,19 +21,110 @@ import (
 func AddDetailFromDescriptors(c *serviceconfig.Service, d *descriptorpb.FileDescriptorSet) {
 	c.Http = &annotations.Http{}
 	c.Backend = &serviceconfig.Backend{}
+	mentionedTypes := make(map[string]bool)
 	for _, api := range c.Apis {
-		typeMap := AddAPIDetailFromDescriptors(api, c, d)
-		log.Printf("%+v", typeMap)
+		AddAPIDetailFromDescriptors(api, c, mentionedTypes, d)
 	}
 	c.Quota = &serviceconfig.Quota{}
 	c.Authentication = &serviceconfig.Authentication{}
 	c.Types = []*typepb.Type{}
 	allTypes := CollectTypesFromDescriptors(d)
 
-	//log.Printf("%+v", allTypes)
+	referencedTypes := make(map[string]*typepb.Type)
 
-	for _, v := range allTypes {
+	for k := range mentionedTypes {
+		addTypeToMap(k, referencedTypes, allTypes)
+	}
+
+	for _, v := range referencedTypes {
 		c.Types = append(c.Types, v)
+	}
+
+	c.Documentation = &serviceconfig.Documentation{}
+	// now we need to get the documentation
+	for _, t := range c.Types {
+		c.Documentation.Rules = append(c.Documentation.Rules, &serviceconfig.DocumentationRule{
+			Selector: t.Name,
+		})
+		for _, f := range t.Fields {
+			c.Documentation.Rules = append(c.Documentation.Rules, &serviceconfig.DocumentationRule{
+				Selector: t.Name + "." + f.Name,
+			})
+		}
+	}
+	for _, a := range c.Apis {
+		c.Documentation.Rules = append(c.Documentation.Rules, &serviceconfig.DocumentationRule{
+			Selector: a.Name,
+		})
+		for _, m := range a.Methods {
+			c.Documentation.Rules = append(c.Documentation.Rules, &serviceconfig.DocumentationRule{
+				Selector: a.Name + "." + m.Name,
+			})
+		}
+	}
+
+	for _, r := range c.Documentation.Rules {
+		r.Description = descriptionForSelector(r.Selector, d)
+	}
+}
+
+func descriptionForSelector(selector string, d *descriptorpb.FileDescriptorSet) string {
+	for _, f := range d.File {
+		if strings.HasPrefix(selector, *f.Package+".") {
+			inFileSelector := strings.TrimPrefix(selector, *f.Package+".")
+			for si, s := range f.Service {
+				if inFileSelector == *s.Name {
+					return commentForPath([]int32{6, int32(si)}, f)
+				} else if strings.HasPrefix(inFileSelector, *s.Name+".") {
+					inServiceSelector := strings.TrimPrefix(inFileSelector, *s.Name+".")
+					for mi, m := range s.Method {
+						if inServiceSelector == *m.Name {
+							return commentForPath([]int32{6, int32(si), 2, int32(mi)}, f)
+						}
+					}
+				}
+			}
+			for mi, m := range f.MessageType {
+				if inFileSelector == *m.Name {
+					return commentForPath([]int32{4, int32(mi)}, f)
+				} else if strings.HasPrefix(inFileSelector, *m.Name+".") {
+					inMessageSelector := strings.TrimPrefix(inFileSelector, *m.Name+".")
+					for di, d := range m.Field {
+						if inMessageSelector == *d.Name {
+							return commentForPath([]int32{4, int32(mi), 2, int32(di)}, f)
+						}
+					}
+				}
+			}
+		}
+	}
+	return selector
+}
+
+func commentForPath(path []int32, d *descriptorpb.FileDescriptorProto) string {
+	for _, s := range d.SourceCodeInfo.Location {
+		if slices.Equal(s.Path, path) {
+			return strings.TrimSpace(*s.LeadingComments)
+		}
+	}
+	return ""
+}
+
+func addTypeToMap(typeName string, referencedTypes map[string]*typepb.Type, allTypes map[string]*typepb.Type) {
+	if referencedTypes[typeName] != nil {
+		return
+	}
+	typeValue := allTypes[typeName]
+	if typeValue == nil {
+		return // this seems bad
+	}
+	referencedTypes[typeName] = typeValue
+	for _, f := range typeValue.Fields {
+		if f.Kind == typepb.Field_TYPE_MESSAGE {
+			fieldType := f.TypeUrl
+			fieldType = strings.TrimPrefix(fieldType, "type.googleapis.com/")
+			addTypeToMap(fieldType, referencedTypes, allTypes)
+		}
 	}
 }
 
@@ -57,8 +148,6 @@ func CollectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*
 
 	for _, file := range d.File {
 		for _, message := range file.MessageType {
-			log.Printf("IN %+v", message)
-
 			fields := []*typepb.Field{}
 			for _, f := range message.Field {
 				field := &typepb.Field{
@@ -83,20 +172,17 @@ func CollectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*
 						default:
 							s = "UNKNOWN"
 						}
-						//log.Printf("WHAT IS THIS %T %+v", v.List().Get(0), v.List().Get(0))
 						a, _ := anypb.New(wrapperspb.String(s))
 						field.Options = append(field.Options, &typepb.Option{
 							Name:  string(ext.FullName()),
 							Value: a,
 						})
 					} else if string(ext.FullName()) == "google.api.resource_reference" {
-						//log.Printf("WHAT IS THIS %T %+v", v.Message().Interface(), v.Message().Interface())
 						a, _ := anypb.New(v.Message().Interface())
 						field.Options = append(field.Options, &typepb.Option{
 							Name:  string(ext.FullName()),
 							Value: a,
 						})
-
 					}
 					return true
 				})
@@ -122,17 +208,13 @@ func CollectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*
 					t.Syntax = typepb.Syntax_SYNTAX_EDITIONS
 				}
 			}
-
-			log.Printf("OUT %+v", t)
 			types[t.Name] = t
 		}
 	}
 	return types
 }
 
-func AddAPIDetailFromDescriptors(api *apipb.Api, c *serviceconfig.Service, d *descriptorpb.FileDescriptorSet) map[string]bool {
-	typeMap := make(map[string]bool)
-
+func AddAPIDetailFromDescriptors(api *apipb.Api, c *serviceconfig.Service, typeMap map[string]bool, d *descriptorpb.FileDescriptorSet) {
 	for _, file := range d.File {
 		for _, service := range file.Service {
 			fullName := (*file.Package) + "." + *(service.Name)
@@ -194,7 +276,6 @@ func AddAPIDetailFromDescriptors(api *apipb.Api, c *serviceconfig.Service, d *de
 			}
 		}
 	}
-	return typeMap
 }
 
 func AddCommonEndpointsSettings(c *serviceconfig.Service) {
