@@ -8,7 +8,9 @@ require (
 	cloud.google.com/go/servicemanagement v1.9.11
 	cloud.google.com/go/serviceusage v1.8.9
 	cloud.google.com/go/translate v1.10.5
+	github.com/google/go-cmp v0.6.0
 	github.com/spf13/cobra v1.8.1
+	golang.org/x/oauth2 v0.21.0
 	google.golang.org/api v0.188.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240701130421-f6361c86f094
 	google.golang.org/grpc v1.64.1
@@ -40,7 +42,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/oauth2 v0.21.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect

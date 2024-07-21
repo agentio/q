@@ -1,7 +1,9 @@
 package compile
 
 import (
+	"log"
 	"slices"
+	"sort"
 	"strings"
 
 	"google.golang.org/genproto/googleapis/api/annotations"
@@ -100,7 +102,41 @@ func descriptionForSelector(selector string, d *descriptorpb.FileDescriptorSet) 
 					inMessageSelector := strings.TrimPrefix(inFileSelector, *m.Name+".")
 					for di, d := range m.Field {
 						if inMessageSelector == *d.Name {
-							return commentForPath([]int32{4, int32(mi), 2, int32(di)}, f)
+							prefix := ""
+							d.Options.ProtoReflect().Range(func(ext protoreflect.FieldDescriptor, v protoreflect.Value) bool {
+								if string(ext.FullName()) == "google.api.field_behavior" {
+									i := v.List().Get(0).Enum()
+									var s string
+									switch i {
+									case 1:
+										s = "OPTIONAL"
+										prefix = "Optional. "
+									case 2:
+										s = "REQUIRED"
+										prefix = "Required. "
+									case 3:
+										s = "OUTPUT_ONLY"
+									case 4:
+										s = "INPUT_ONLY"
+									case 5:
+										s = "IMMUTABLE"
+									case 6:
+										s = "UNORDERED_LIST"
+									case 7:
+										s = "NON_EMPTY_DEFAULT"
+									case 8:
+										s = "IDENTIFIER"
+										prefix = "Identifier. "
+									default:
+										s = "UNKNOWN"
+									}
+									if false {
+										log.Printf("%s", s)
+									}
+								}
+								return true
+							})
+							return prefix + commentForPath([]int32{4, int32(mi), 2, int32(di)}, f)
 						}
 					}
 				}
@@ -146,6 +182,8 @@ func cardinalityForLabel(l *descriptorpb.FieldDescriptorProto_Label) typepb.Fiel
 			return typepb.Field_CARDINALITY_OPTIONAL
 		case descriptorpb.FieldDescriptorProto_LABEL_REPEATED:
 			return typepb.Field_CARDINALITY_REPEATED
+		case descriptorpb.FieldDescriptorProto_LABEL_REQUIRED:
+			return typepb.Field_CARDINALITY_REQUIRED
 		default:
 			return typepb.Field_CARDINALITY_UNKNOWN
 		}
@@ -178,6 +216,18 @@ func CollectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*
 							s = "OPTIONAL"
 						case 2:
 							s = "REQUIRED"
+						case 3:
+							s = "OUTPUT_ONLY"
+						case 4:
+							s = "INPUT_ONLY"
+						case 5:
+							s = "IMMUTABLE"
+						case 6:
+							s = "UNORDERED_LIST"
+						case 7:
+							s = "NON_EMPTY_DEFAULT"
+						case 8:
+							s = "IDENTIFIER"
 						default:
 							s = "UNKNOWN"
 						}
@@ -193,6 +243,9 @@ func CollectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*
 							Value: a,
 						})
 					}
+					sort.Slice(field.Options, func(i, j int) bool {
+						return field.Options[i].Name < field.Options[j].Name
+					})
 					return true
 				})
 				fields = append(fields, field)
@@ -217,6 +270,20 @@ func CollectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*
 					t.Syntax = typepb.Syntax_SYNTAX_EDITIONS
 				}
 			}
+
+			message.Options.ProtoReflect().Range(func(ext protoreflect.FieldDescriptor, v protoreflect.Value) bool {
+				if string(ext.FullName()) == "google.api.field_behavior" {
+
+				} else if string(ext.FullName()) == "google.api.resource" {
+					a, _ := anypb.New(v.Message().Interface())
+					t.Options = append(t.Options, &typepb.Option{
+						Name:  string(ext.FullName()),
+						Value: a,
+					})
+				}
+				return true
+			})
+
 			types[t.Name] = t
 		}
 	}
