@@ -1,9 +1,9 @@
 package compile
 
 import (
-	"log"
 	"strings"
 
+	"google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/genproto/googleapis/api/label"
 	"google.golang.org/genproto/googleapis/api/metric"
 	"google.golang.org/genproto/googleapis/api/monitoredres"
@@ -12,58 +12,68 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/apipb"
+	"google.golang.org/protobuf/types/known/sourcecontextpb"
 	"google.golang.org/protobuf/types/known/typepb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func AddDetailFromDescriptors(c *serviceconfig.Service, d *descriptorpb.FileDescriptorSet) {
+	c.Types = []*typepb.Type{}
+	c.Http = &annotations.Http{}
+	c.Backend = &serviceconfig.Backend{}
 	for _, api := range c.Apis {
-
-		AddAPIDetailFromDescriptors(api, d)
-
+		AddAPIDetailFromDescriptors(api, c, d)
 	}
+	c.Quota = &serviceconfig.Quota{}
+	c.Authentication = &serviceconfig.Authentication{}
 }
 
-func AddAPIDetailFromDescriptors(api *apipb.Api, d *descriptorpb.FileDescriptorSet) {
-	log.Printf("%s", api.Name)
+func AddAPIDetailFromDescriptors(api *apipb.Api, c *serviceconfig.Service, d *descriptorpb.FileDescriptorSet) {
 
 	for _, file := range d.File {
 		for _, service := range file.Service {
 			fullName := (*file.Package) + "." + *(service.Name)
 			if fullName == api.Name {
-				log.Printf("-- %s", fullName)
-
+				parts := strings.Split(*file.Package, ".")
+				api.Version = parts[len(parts)-1]
+				api.SourceContext = &sourcecontextpb.SourceContext{
+					FileName: *file.Name,
+				}
+				if *file.Syntax == "proto3" {
+					api.Syntax = typepb.Syntax_SYNTAX_PROTO3
+				}
 				for _, method := range service.Method {
-
-					log.Printf("options: %+v", method.Options)
-
+					// TODO: backend rules should only be added if they aren't already user-specified
+					c.Backend.Rules = append(c.Backend.Rules, &serviceconfig.BackendRule{
+						Selector: *file.Package + "." + *service.Name + "." + *method.Name,
+					})
 					options := []*typepb.Option{}
 					method.Options.ProtoReflect().Range(func(ext protoreflect.FieldDescriptor, v protoreflect.Value) bool {
-						//log.Printf("ranging %T %T ext=%+v value=%+v", ext, v, ext, v)
-
 						var value *anypb.Any
-						log.Printf("%s", ext.FullName())
 						k := ext.Kind().String()
 						cardinality := ext.Cardinality().String()
 						if k == "string" && cardinality == "repeated" {
-							log.Printf("list of strings %s", v.List().Get(0).String())
-
 							value, _ = anypb.New(wrapperspb.String(v.List().Get(0).String()))
-
 						} else if k == "message" {
-							log.Printf("message %T %+v", v.Message().Interface(), v.Message().Interface())
-
 							value, _ = anypb.New(v.Message().Interface())
-
 						}
 						options = append(options, &typepb.Option{
 							Name:  string(ext.FullName()),
 							Value: value,
 						})
+						// collect http rules into the "http" section of the service config
+						if string(ext.FullName()) == "google.api.http" {
 
+							switch h := v.Message().Interface().(type) {
+							case *annotations.HttpRule:
+								h.Selector = (*file.Package) + "." + (*service.Name) + "." + (*method.Name)
+								c.Http.Rules = append(c.Http.Rules, h)
+							default:
+								// nothing
+							}
+						}
 						return true
 					})
-
 					apiMethod := &apipb.Method{
 						Name:            *(method.Name),
 						RequestTypeUrl:  "type.googleapis.com/" + strings.TrimLeft(*(method.InputType), "."),
@@ -71,16 +81,10 @@ func AddAPIDetailFromDescriptors(api *apipb.Api, d *descriptorpb.FileDescriptorS
 						Options:         options,
 					}
 					api.Methods = append(api.Methods, apiMethod)
-
-					log.Printf("---- %s", *(method.Name))
-
 				}
-
 			}
 		}
-
 	}
-
 }
 
 func AddCommonEndpointsSettings(c *serviceconfig.Service) {
