@@ -34,6 +34,7 @@ func Cmd() *cobra.Command {
 				if err := proto.Unmarshal(bytes, &descriptors); err != nil {
 					log.Fatalln("Failed to parse descriptors:", err)
 				}
+				compile.AddInternalDetail(config)
 				compile.AddDetailFromDescriptors(config, &descriptors)
 			}
 			compile.AddCommonEndpointsSettings(config)

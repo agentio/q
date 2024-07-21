@@ -18,6 +18,15 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
+func AddInternalDetail(c *serviceconfig.Service) {
+	// this assumes services are named "SERVICE.endpoints.PROJECT.cloud.goog"
+	parts := strings.Split(c.Name, ".")
+	c.ProducerProjectId = parts[2]
+	c.Endpoints = append(c.Endpoints, &serviceconfig.Endpoint{
+		Name: c.Name,
+	})
+}
+
 func AddDetailFromDescriptors(c *serviceconfig.Service, d *descriptorpb.FileDescriptorSet) {
 	c.Http = &annotations.Http{}
 	c.Backend = &serviceconfig.Backend{}
