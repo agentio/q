@@ -2,6 +2,7 @@ package compile
 
 import (
 	"log"
+	"os"
 	"slices"
 	"sort"
 	"strings"
@@ -11,6 +12,7 @@ import (
 	"google.golang.org/genproto/googleapis/api/metric"
 	"google.golang.org/genproto/googleapis/api/monitoredres"
 	"google.golang.org/genproto/googleapis/api/serviceconfig"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/types/descriptorpb"
 	"google.golang.org/protobuf/types/known/anypb"
@@ -20,7 +22,45 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
-func AddInternalDetail(c *serviceconfig.Service) {
+func CompileDescriptor(config *serviceconfig.Service, filename string) error {
+	bytes, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	var descriptors descriptorpb.FileDescriptorSet
+	if err := proto.Unmarshal(bytes, &descriptors); err != nil {
+		log.Fatalln("Failed to parse descriptors:", err)
+	}
+	addInternalDetail(config)
+	addDetailFromDescriptors(config, &descriptors)
+	// sort slices to normalize the output
+	sort.Slice(config.Types, func(i, j int) bool {
+		return config.Types[i].Name < config.Types[j].Name
+	})
+	for _, t := range config.Types {
+		for _, field := range t.Fields {
+			sort.Slice(field.Options, func(i, j int) bool {
+				return field.Options[i].Name < field.Options[j].Name
+			})
+		}
+	}
+	for _, a := range config.Apis {
+		sort.Slice(a.Methods, func(i, j int) bool {
+			return a.Methods[i].Name < a.Methods[j].Name
+		})
+		for _, method := range a.Methods {
+			sort.Slice(method.Options, func(i, j int) bool {
+				return method.Options[i].Name < method.Options[j].Name
+			})
+		}
+	}
+	sort.Slice(config.Documentation.Rules, func(i, j int) bool {
+		return config.Documentation.Rules[i].Selector < config.Documentation.Rules[j].Selector
+	})
+	return nil
+}
+
+func addInternalDetail(c *serviceconfig.Service) {
 	// this assumes services are named "SERVICE.endpoints.PROJECT.cloud.goog"
 	parts := strings.Split(c.Name, ".")
 	c.ProducerProjectId = parts[2]
@@ -29,30 +69,27 @@ func AddInternalDetail(c *serviceconfig.Service) {
 	})
 }
 
-func AddDetailFromDescriptors(c *serviceconfig.Service, d *descriptorpb.FileDescriptorSet) {
+func addDetailFromDescriptors(c *serviceconfig.Service, d *descriptorpb.FileDescriptorSet) {
 	c.Http = &annotations.Http{}
 	c.Backend = &serviceconfig.Backend{}
 	mentionedTypes := make(map[string]bool)
 	for _, api := range c.Apis {
-		AddAPIDetailFromDescriptors(api, c, mentionedTypes, d)
+		addAPIDetailFromDescriptors(api, c, mentionedTypes, d)
 	}
 	c.Quota = &serviceconfig.Quota{}
 	c.Authentication = &serviceconfig.Authentication{}
 	c.Types = []*typepb.Type{}
-	allTypes := CollectTypesFromDescriptors(d)
+	allTypes := collectTypesFromDescriptors(d)
 
 	referencedTypes := make(map[string]*typepb.Type)
-
 	for k := range mentionedTypes {
 		addTypeToMap(k, referencedTypes, allTypes)
 	}
-
 	for _, v := range referencedTypes {
 		c.Types = append(c.Types, v)
 	}
 
 	c.Documentation = &serviceconfig.Documentation{}
-	// now we need to get the documentation
 	for _, t := range c.Types {
 		c.Documentation.Rules = append(c.Documentation.Rules, &serviceconfig.DocumentationRule{
 			Selector: t.Name,
@@ -73,7 +110,6 @@ func AddDetailFromDescriptors(c *serviceconfig.Service, d *descriptorpb.FileDesc
 			})
 		}
 	}
-
 	for _, r := range c.Documentation.Rules {
 		r.Description = descriptionForSelector(r.Selector, d)
 	}
@@ -190,7 +226,7 @@ func cardinalityForLabel(l *descriptorpb.FieldDescriptorProto_Label) typepb.Fiel
 	}
 }
 
-func CollectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*typepb.Type {
+func collectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*typepb.Type {
 	types := make(map[string]*typepb.Type)
 
 	for _, file := range d.File {
@@ -290,7 +326,7 @@ func CollectTypesFromDescriptors(d *descriptorpb.FileDescriptorSet) map[string]*
 	return types
 }
 
-func AddAPIDetailFromDescriptors(api *apipb.Api, c *serviceconfig.Service, typeMap map[string]bool, d *descriptorpb.FileDescriptorSet) {
+func addAPIDetailFromDescriptors(api *apipb.Api, c *serviceconfig.Service, typeMap map[string]bool, d *descriptorpb.FileDescriptorSet) {
 	for _, file := range d.File {
 		for _, service := range file.Service {
 			fullName := (*file.Package) + "." + *(service.Name)

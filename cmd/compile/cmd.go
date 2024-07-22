@@ -2,7 +2,6 @@ package compile
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/agent-kit/q/pkg/compile"
@@ -10,8 +9,6 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/genproto/googleapis/api/serviceconfig"
 	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/descriptorpb"
 )
 
 func Cmd() *cobra.Command {
@@ -24,19 +21,7 @@ func Cmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			// TODO: move to helper function
-			{
-				bytes, err := os.ReadFile(args[1])
-				if err != nil {
-					return err
-				}
-				var descriptors descriptorpb.FileDescriptorSet
-				if err := proto.Unmarshal(bytes, &descriptors); err != nil {
-					log.Fatalln("Failed to parse descriptors:", err)
-				}
-				compile.AddInternalDetail(config)
-				compile.AddDetailFromDescriptors(config, &descriptors)
-			}
+			compile.CompileDescriptor(config, args[1])
 			compile.AddCommonEndpointsSettings(config)
 			bytes, err := protojson.Marshal(config)
 			if err != nil {

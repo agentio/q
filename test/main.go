@@ -68,6 +68,9 @@ func run() error {
 	}
 
 	for _, a := range c1.Apis {
+		sort.Slice(a.Methods, func(i, j int) bool {
+			return a.Methods[i].Name < a.Methods[j].Name
+		})
 		for _, method := range a.Methods {
 			sort.Slice(method.Options, func(i, j int) bool {
 				return method.Options[i].Name < method.Options[j].Name
@@ -75,6 +78,9 @@ func run() error {
 		}
 	}
 	for _, a := range c2.Apis {
+		sort.Slice(a.Methods, func(i, j int) bool {
+			return a.Methods[i].Name < a.Methods[j].Name
+		})
 		for _, method := range a.Methods {
 			sort.Slice(method.Options, func(i, j int) bool {
 				return method.Options[i].Name < method.Options[j].Name
