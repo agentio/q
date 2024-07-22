@@ -3,7 +3,7 @@ info:
   title: "Airport Codes"
   description: "Get the name of an airport from its three-letter IATA code."
   version: "1.0.0"
-host: "airports.endpoints.PROJECTID.cloud.goog"
+host: "airports.endpoints.bobadojo-0007.cloud.goog"
 schemes:
   - "https"
 paths:

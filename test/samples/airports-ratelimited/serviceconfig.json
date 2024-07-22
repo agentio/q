@@ -2,7 +2,7 @@
   "name": "airports.endpoints.bobadojo-0007.cloud.goog",
   "title": "Airport Codes",
   "producerProjectId": "bobadojo-0007",
-  "id": "2024-07-22r1",
+  "id": "2024-07-22r0",
   "apis": [
     {
       "name": "1.airports_endpoints_bobadojo_0007_cloud_goog",
@@ -173,12 +173,31 @@
       }
     ]
   },
+  "quota": {
+    "limits": [
+      {
+        "name": "limit-on-airport-requests",
+        "metric": "airport_requests",
+        "unit": "1/min/{project}",
+        "values": {
+          "STANDARD": "5"
+        }
+      }
+    ],
+    "metricRules": [
+      {
+        "selector": "1.airports_endpoints_bobadojo_0007_cloud_goog.AirportName",
+        "metricCosts": {
+          "airport_requests": "1"
+        }
+      }
+    ]
+  },
   "authentication": {},
   "usage": {
     "rules": [
       {
-        "selector": "1.airports_endpoints_bobadojo_0007_cloud_goog.AirportName",
-        "allowUnregisteredCalls": true
+        "selector": "1.airports_endpoints_bobadojo_0007_cloud_goog.AirportName"
       }
     ]
   },
@@ -196,6 +215,12 @@
     }
   ],
   "metrics": [
+    {
+      "name": "airport_requests",
+      "type": "airport_requests",
+      "metricKind": "DELTA",
+      "valueType": "INT64"
+    },
     {
       "name": "serviceruntime.googleapis.com/api/consumer/request_count",
       "type": "serviceruntime.googleapis.com/api/consumer/request_count",
