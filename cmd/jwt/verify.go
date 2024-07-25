@@ -9,16 +9,17 @@ import (
 	"io"
 	"math/big"
 	"net/http"
+	"strings"
 
 	"github.com/agent-kit/q/pkg/jws"
 	"github.com/spf13/cobra"
 )
 
-type KeySet struct {
-	Keys []Key `json:"keys"`
+type JWKeySet struct {
+	Keys []JWKey `json:"keys"`
 }
 
-type Key struct {
+type JWKey struct {
 	E   string `json:"e"`
 	Use string `json:"use"`
 	Alg string `json:"alg"`
@@ -45,8 +46,18 @@ func verifyCmd() *cobra.Command {
 			}
 			fmt.Printf("%s", string(b))
 
-			// now get the private key from Google's service accounts service
-			keyUrl := "https://www.googleapis.com/service_accounts/v1/jwk/" + claims.Sub
+			var keyUrl string
+
+			if claims.Iss == "https://accounts.google.com" {
+				// get public keys from Google's general accounts service
+				keyUrl = "https://www.googleapis.com/oauth2/v3/certs"
+			} else if strings.HasSuffix(claims.Iss, ".iam.gserviceaccount.com") {
+				// get public keys from Google's service accounts service
+				keyUrl = "https://www.googleapis.com/service_accounts/v1/jwk/" + claims.Sub
+			} else {
+				return fmt.Errorf("unsupported issuer %s", claims.Iss)
+			}
+
 			response, err := http.Get(keyUrl)
 			if err != nil {
 				return err
@@ -55,7 +66,7 @@ func verifyCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			var keySet KeySet
+			var keySet JWKeySet
 			err = json.Unmarshal(responseBytes, &keySet)
 			if err != nil {
 				return err
