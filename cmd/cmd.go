@@ -6,6 +6,7 @@ import (
 	"github.com/agent-kit/q/cmd/demo"
 	"github.com/agent-kit/q/cmd/doctor"
 	"github.com/agent-kit/q/cmd/inspect"
+	"github.com/agent-kit/q/cmd/jwt"
 	"github.com/agent-kit/q/cmd/logging"
 	"github.com/agent-kit/q/cmd/monitoring"
 	"github.com/agent-kit/q/cmd/servicecontrol"
@@ -25,6 +26,7 @@ func Cmd() *cobra.Command {
 	cmd.AddCommand(compile.Cmd())
 	cmd.AddCommand(demo.Cmd())
 	cmd.AddCommand(doctor.Cmd())
+	cmd.AddCommand(jwt.Cmd())
 	cmd.AddCommand(logging.Cmd())
 	cmd.AddCommand(monitoring.Cmd())
 	cmd.AddCommand(servicecontrol.Cmd())
