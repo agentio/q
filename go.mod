@@ -1,4 +1,4 @@
-module github.com/agent-kit/q
+module github.com/agentio/q
 
 go 1.22.5
 

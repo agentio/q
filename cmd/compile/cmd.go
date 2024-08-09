@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/agent-kit/q/pkg/compile"
-	"github.com/agent-kit/q/pkg/encoding"
+	"github.com/agentio/q/pkg/compile"
+	"github.com/agentio/q/pkg/encoding"
 	"github.com/spf13/cobra"
 	"google.golang.org/genproto/googleapis/api/serviceconfig"
 	"google.golang.org/protobuf/encoding/protojson"

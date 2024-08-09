@@ -1,18 +1,18 @@
 package cmd
 
 import (
-	"github.com/agent-kit/q/cmd/apikeys"
-	"github.com/agent-kit/q/cmd/compile"
-	"github.com/agent-kit/q/cmd/demo"
-	"github.com/agent-kit/q/cmd/doctor"
-	"github.com/agent-kit/q/cmd/inspect"
-	"github.com/agent-kit/q/cmd/jwt"
-	"github.com/agent-kit/q/cmd/logging"
-	"github.com/agent-kit/q/cmd/monitoring"
-	"github.com/agent-kit/q/cmd/servicecontrol"
-	"github.com/agent-kit/q/cmd/servicemanagement"
-	"github.com/agent-kit/q/cmd/serviceusage"
-	"github.com/agent-kit/q/cmd/translate"
+	"github.com/agentio/q/cmd/apikeys"
+	"github.com/agentio/q/cmd/compile"
+	"github.com/agentio/q/cmd/demo"
+	"github.com/agentio/q/cmd/doctor"
+	"github.com/agentio/q/cmd/inspect"
+	"github.com/agentio/q/cmd/jwt"
+	"github.com/agentio/q/cmd/logging"
+	"github.com/agentio/q/cmd/monitoring"
+	"github.com/agentio/q/cmd/servicecontrol"
+	"github.com/agentio/q/cmd/servicemanagement"
+	"github.com/agentio/q/cmd/serviceusage"
+	"github.com/agentio/q/cmd/translate"
 	"github.com/spf13/cobra"
 )
 

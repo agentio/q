@@ -3,7 +3,7 @@ package apikeys
 import (
 	"fmt"
 
-	"github.com/agent-kit/q/pkg/client"
+	"github.com/agentio/q/pkg/client"
 	"github.com/spf13/cobra"
 
 	"cloud.google.com/go/apikeys/apiv2/apikeyspb"

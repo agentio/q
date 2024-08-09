@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/agent-kit/q/pkg/jws"
+	"github.com/agentio/q/pkg/jws"
 	"github.com/spf13/cobra"
 )
 

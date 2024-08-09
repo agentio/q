@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"github.com/agent-kit/q/pkg/gcloud"
+	"github.com/agentio/q/pkg/gcloud"
 	"github.com/spf13/cobra"
 )
 

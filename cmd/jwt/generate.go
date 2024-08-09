@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/agent-kit/q/pkg/jws"
+	"github.com/agentio/q/pkg/jws"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2/google"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"cloud.google.com/go/apikeys/apiv2/apikeyspb"
-	"github.com/agent-kit/q/pkg/client"
+	"github.com/agentio/q/pkg/client"
 	"github.com/spf13/cobra"
 	"google.golang.org/protobuf/encoding/protojson"
 )
