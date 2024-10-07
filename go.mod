@@ -8,6 +8,8 @@ require (
 	cloud.google.com/go/servicemanagement v1.9.11
 	cloud.google.com/go/serviceusage v1.8.9
 	cloud.google.com/go/translate v1.10.5
+	github.com/go-jose/go-jose v2.6.3+incompatible
+	github.com/go-jose/go-jose/v4 v4.0.4
 	github.com/google/go-cmp v0.6.0
 	github.com/spf13/cobra v1.8.1
 	golang.org/x/oauth2 v0.21.0
@@ -48,4 +50,5 @@ require (
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/genproto v0.0.0-20240708141625-4ad9e859172b // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240708141625-4ad9e859172b // indirect
+	gopkg.in/go-jose/go-jose.v2 v2.6.3 // indirect
 )
