@@ -12,6 +12,7 @@ require (
 	cloud.google.com/go/translate v1.12.0
 	github.com/go-jose/go-jose/v4 v4.0.4
 	github.com/google/go-cmp v0.6.0
+	github.com/google/uuid v1.6.0
 	github.com/spf13/cobra v1.8.1
 	golang.org/x/oauth2 v0.22.0
 	google.golang.org/api v0.196.0
