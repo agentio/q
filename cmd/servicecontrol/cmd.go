@@ -9,5 +9,6 @@ func Cmd() *cobra.Command {
 		Use:   "service-control",
 		Short: "Control API services with the Service Control API",
 	}
+	cmd.AddCommand(mockCmd())
 	return cmd
 }
