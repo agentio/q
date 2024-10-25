@@ -15,6 +15,8 @@ cloud.google.com/go/logging v1.11.0 h1:v3ktVzXMV7CwHq1MBF65wcqLMA7i+z3YxbUsoK7mO
 cloud.google.com/go/logging v1.11.0/go.mod h1:5LDiJC/RxTt+fHc1LAt20R9TKiUTReDg6RuuFOZ67+A=
 cloud.google.com/go/longrunning v0.6.0 h1:mM1ZmaNsQsnb+5n1DNPeL0KwQd9jQRqSqSDEkBZr+aI=
 cloud.google.com/go/longrunning v0.6.0/go.mod h1:uHzSZqW89h7/pasCWNYdUpwGz3PcVWhrWupreVPYLts=
+cloud.google.com/go/monitoring v1.21.0 h1:EMc0tB+d3lUewT2NzKC/hr8cSR9WsUieVywzIHetGro=
+cloud.google.com/go/monitoring v1.21.0/go.mod h1:tuJ+KNDdJbetSsbSGTqnaBvbauS5kr3Q/koy3Up6r+4=
 cloud.google.com/go/servicecontrol v1.14.1 h1:Mzf/S0bqQ53pyapmk9aqa1l6VcY5MjwTzLRYDS1E958=
 cloud.google.com/go/servicecontrol v1.14.1/go.mod h1:AS1b4AzAcl2bS3Lcn3H2pOWhZvAwTguINIlVaFjtOvI=
 cloud.google.com/go/servicemanagement v1.9.11 h1:/jHMWhNNaf4gya2yVV2HA9lWFA9Lbs2VuKhUiKpIxBs=

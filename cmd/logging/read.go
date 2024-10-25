@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/url"
 
 	logging "cloud.google.com/go/logging/apiv2"
 	"cloud.google.com/go/logging/apiv2/loggingpb"
@@ -17,9 +18,9 @@ import (
 func readCmd() *cobra.Command {
 	var limit int
 	cmd := &cobra.Command{
-		Use:   "read PROJECT",
+		Use:   "read PROJECT SERVICE",
 		Short: "read log entries with the Cloud Logging API",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			ctx := cmd.Context()
@@ -30,10 +31,12 @@ func readCmd() *cobra.Command {
 			defer c.Close()
 
 			project := args[0]
+			service := url.PathEscape(args[1])
 
 			iter := c.ListLogEntries(ctx, &loggingpb.ListLogEntriesRequest{
 				ResourceNames: []string{"projects/" + project},
-				Filter:        `logName = "projects/` + project + `/logs/appengine.googleapis.com%2Frequest_log"`,
+				Filter:        `logName = "projects/` + project + `/logs/` + service + `"`,
+				OrderBy:       "timestamp desc",
 			})
 			count := 0
 			for {
