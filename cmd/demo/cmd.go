@@ -137,9 +137,9 @@ usage:
   - selector: bobadojo.stores.v1.Stores.ListStores
     allow_unregistered_calls: true
   - selector: bobadojo.stores.v1.Stores.GetStore
-    allow_unregistered_calls: true
+    allow_unregistered_calls: false
   - selector: bobadojo.stores.v1.Stores.FindStores
-    allow_unregistered_calls: true
+    allow_unregistered_calls: false
 `
 
 const SERVICE_YAML = `apiVersion: serving.knative.dev/v1
