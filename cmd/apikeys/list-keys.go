@@ -25,7 +25,7 @@ func listKeysCmd() *cobra.Command {
 			for {
 				response, err := c.ListKeys(ctx, &apikeyspb.ListKeysRequest{
 					Parent:    "projects/" + args[0] + "/locations/global",
-					PageSize:  2,
+					PageSize:  100,
 					PageToken: nextPageToken,
 				})
 				if err != nil {

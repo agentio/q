@@ -11,6 +11,7 @@ import (
 
 func getServiceConfigCmd() *cobra.Command {
 	var format string
+	var full bool
 	cmd := &cobra.Command{
 		Use:   "get-service-config SERVICE CONFIG",
 		Short: "Get service config",
@@ -22,9 +23,14 @@ func getServiceConfigCmd() *cobra.Command {
 				return err
 			}
 			defer c.Close()
+			view := servicemanagementpb.GetServiceConfigRequest_BASIC
+			if full {
+				view = servicemanagementpb.GetServiceConfigRequest_FULL
+			}
 			response, err := c.GetServiceConfig(ctx, &servicemanagementpb.GetServiceConfigRequest{
 				ServiceName: args[0],
 				ConfigId:    args[1],
+				View:        view,
 			})
 			if err != nil {
 				return err
@@ -40,5 +46,7 @@ func getServiceConfigCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&format, "format", "json", "output format")
+	cmd.Flags().BoolVar(&full, "full", false, "pass view=FULL to GetServiceConfig")
+
 	return cmd
 }
