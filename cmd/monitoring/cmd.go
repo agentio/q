@@ -9,7 +9,7 @@ func Cmd() *cobra.Command {
 		Use:   "monitoring",
 		Short: "Monitor services with the Cloud Monitoring API",
 	}
-	cmd.AddCommand(readCmd())
-	cmd.AddCommand(writeCmd())
+	cmd.AddCommand(listTimeSeries())
+	cmd.AddCommand(createTimeSeriesCmd())
 	return cmd
 }

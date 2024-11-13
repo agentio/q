@@ -15,11 +15,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func readCmd() *cobra.Command {
+func listLogEntriesCmd() *cobra.Command {
 	var limit int
 	cmd := &cobra.Command{
-		Use:   "read PROJECT SERVICE",
-		Short: "read log entries with the Cloud Logging API",
+		Use:   "list-log-entries PROJECT LOG",
+		Short: "List log entries with the Cloud Logging API",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
@@ -31,11 +31,11 @@ func readCmd() *cobra.Command {
 			defer c.Close()
 
 			project := args[0]
-			service := url.PathEscape(args[1])
+			logName := url.PathEscape(args[1])
 
 			iter := c.ListLogEntries(ctx, &loggingpb.ListLogEntriesRequest{
 				ResourceNames: []string{"projects/" + project},
-				Filter:        `logName = "projects/` + project + `/logs/` + service + `"`,
+				Filter:        `logName = "projects/` + project + `/logs/` + logName + `"`,
 				OrderBy:       "timestamp desc",
 			})
 			count := 0
@@ -69,7 +69,6 @@ func readCmd() *cobra.Command {
 						}
 					}
 				default:
-
 				}
 				count += 1
 				if count == limit {

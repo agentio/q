@@ -14,9 +14,9 @@ import (
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
 )
 
-func writeCmd() *cobra.Command {
+func createTimeSeriesCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "write PROJECT METRIC VALUE",
+		Use:   "create-time-series PROJECT METRIC VALUE",
 		Args:  cobra.ExactArgs(3),
 		Short: "write test values to the Cloud Monitoring API",
 		Long: `sample metrics: 

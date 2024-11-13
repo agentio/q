@@ -12,11 +12,11 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func readCmd() *cobra.Command {
+func listTimeSeries() *cobra.Command {
 	var format string
 	var d int
 	cmd := &cobra.Command{
-		Use:   "read PROJECT METRIC",
+		Use:   "list-time-series PROJECT METRIC",
 		Args:  cobra.ExactArgs(2),
 		Short: "read test values from the Cloud Monitoring API",
 		Long: `sample metrics:
