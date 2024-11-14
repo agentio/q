@@ -9,7 +9,14 @@ func Cmd() *cobra.Command {
 		Use:   "logging",
 		Short: "Write and manage log entries with the Cloud Logging API",
 	}
+	cmd.AddCommand(listBucketsCmd())
+	cmd.AddCommand(listExclusionsCmd())
+	cmd.AddCommand(listLinksCmd())
+	cmd.AddCommand(listLogsCmd())
 	cmd.AddCommand(listLogEntriesCmd())
+	cmd.AddCommand(listLogMetricsCmd())
+	cmd.AddCommand(listSinksCmd())
+	cmd.AddCommand(listViewsCmd())
 	return cmd
 }
 

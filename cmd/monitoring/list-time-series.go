@@ -14,6 +14,7 @@ import (
 
 func listTimeSeries() *cobra.Command {
 	var format string
+	var filter string
 	var d int
 	cmd := &cobra.Command{
 		Use:   "list-time-series PROJECT METRIC",
@@ -46,7 +47,7 @@ serviceruntime.googleapis.com/api/producer/response_sizes
 					StartTime: timestamppb.New(time.Now().Add(-time.Duration(d) * time.Second)),
 				},
 				View:   monitoringpb.ListTimeSeriesRequest_FULL,
-				Filter: `metric.type = "` + metric + `"`,
+				Filter: `metric.type = "` + metric + `"` + filter,
 			})
 			if format == "json" {
 				fmt.Fprintf(cmd.OutOrStdout(), "[")
@@ -80,6 +81,7 @@ serviceruntime.googleapis.com/api/producer/response_sizes
 		},
 	}
 	cmd.Flags().StringVar(&format, "format", "json", "output format")
+	cmd.Flags().StringVar(&filter, "filter", "", "additional filter expression")
 	cmd.Flags().IntVarP(&d, "duration", "d", 3600, "duration of time to query (to now)")
 	return cmd
 }

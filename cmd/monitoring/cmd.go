@@ -9,6 +9,8 @@ func Cmd() *cobra.Command {
 		Use:   "monitoring",
 		Short: "Monitor services with the Cloud Monitoring API",
 	}
+	cmd.AddCommand(listMetricDescriptorsCmd())
+	cmd.AddCommand(listMonitoredResourceDescriptorsCmd())
 	cmd.AddCommand(listTimeSeries())
 	cmd.AddCommand(createTimeSeriesCmd())
 	return cmd

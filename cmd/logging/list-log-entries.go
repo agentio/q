@@ -42,7 +42,6 @@ func listLogEntriesCmd() *cobra.Command {
 			for {
 				entry, err := iter.Next()
 				if err != nil {
-					log.Printf("%s", err)
 					break
 				}
 				b, err := json.MarshalIndent(entry, "", "  ")
