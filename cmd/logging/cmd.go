@@ -15,8 +15,10 @@ func Cmd() *cobra.Command {
 	cmd.AddCommand(listLogsCmd())
 	cmd.AddCommand(listLogEntriesCmd())
 	cmd.AddCommand(listLogMetricsCmd())
+	cmd.AddCommand(listMonitoredResourceDescriptorsCmd())
 	cmd.AddCommand(listSinksCmd())
 	cmd.AddCommand(listViewsCmd())
+	cmd.AddCommand(tailLogEntriesCmd())
 	return cmd
 }
 
