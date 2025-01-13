@@ -45,7 +45,7 @@ func verifyCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			fmt.Printf("%s", string(b))
+			fmt.Printf("%s\n", string(b))
 
 			if keyUrl != "" {
 				// use the user-specified keyurl
@@ -110,7 +110,7 @@ func verifyCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&format, "format", "json", "output format")
-	cmd.Flags().StringVar(&keyUrl, "keyurl", "json", "key url")
+	cmd.Flags().StringVar(&keyUrl, "keyurl", "", "key url")
 
 	return cmd
 }
