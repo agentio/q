@@ -23,7 +23,8 @@ func disableServiceCmd() *cobra.Command {
 			}
 			defer c.Close()
 			response, err := c.DisableService(ctx, &serviceusagepb.DisableServiceRequest{
-				Name: args[0],
+				Name:                     args[0],
+				DisableDependentServices: true,
 			})
 			if err != nil {
 				return err

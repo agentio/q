@@ -6,7 +6,7 @@ FSL-1.1-Apache-2.0
 
 ## Notice
 
-Copyright 2024 The Agent Kit Authors.
+Copyright 2024 The Agent IO Authors.
 
 ## Terms and Conditions
 

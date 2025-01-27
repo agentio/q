@@ -26,8 +26,9 @@ func listServicesCmd() *cobra.Command {
 			defer c.Close()
 
 			response := c.ListServices(ctx, &serviceusagepb.ListServicesRequest{
-				Parent: args[0],
-				Filter: filter,
+				Parent:   args[0],
+				Filter:   filter,
+				PageSize: 200,
 			})
 			if format == "json" {
 				fmt.Fprintf(cmd.OutOrStdout(), "[")
