@@ -130,6 +130,17 @@ func Decode(payload string) (*ClaimSet, error) {
 	}
 	c := &ClaimSet{}
 	err = json.NewDecoder(bytes.NewBuffer(decoded)).Decode(c)
+	if err != nil {
+		return nil, err
+	}
+	p := make(map[string]interface{})
+	err = json.Unmarshal(decoded, &p)
+	for _, c := range []string{
+		"iss", "scope", "aud", "exp", "iat", "typ", "sub", "prn",
+	} {
+		delete(p, c)
+	}
+	c.PrivateClaims = p
 	return c, err
 }
 

@@ -9,6 +9,7 @@ import (
 	"io"
 	"math/big"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/agentio/q/pkg/jws"
@@ -31,6 +32,7 @@ type JWKey struct {
 func verifyCmd() *cobra.Command {
 	var format string
 	var keyUrl string
+	var keyFile string
 	cmd := &cobra.Command{
 		Use:   "verify",
 		Short: "Verify a JWT signed by a Google Service Account",
@@ -41,36 +43,55 @@ func verifyCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			b, err := json.MarshalIndent(claims, "", "  ")
 			if err != nil {
 				return err
 			}
-			fmt.Printf("%s", string(b))
+			fmt.Printf("claims %s\n", string(b))
 
-			if keyUrl != "" {
-				// use the user-specified keyurl
-			} else if claims.Iss == "https://accounts.google.com" {
-				// get public keys from Google's general accounts service
-				keyUrl = "https://www.googleapis.com/oauth2/v3/certs"
-			} else if strings.HasSuffix(claims.Iss, ".iam.gserviceaccount.com") {
-				// get public keys from Google's service accounts service
-				keyUrl = "https://www.googleapis.com/service_accounts/v1/jwk/" + claims.Sub
-			} else {
-				return fmt.Errorf("unsupported issuer %s", claims.Iss)
-			}
-
-			response, err := http.Get(keyUrl)
+			b, err = json.MarshalIndent(claims.PrivateClaims, "", "  ")
 			if err != nil {
 				return err
 			}
-			responseBytes, err := io.ReadAll(response.Body)
-			if err != nil {
-				return err
-			}
+			fmt.Printf("private claims %s\n", string(b))
+
 			var keySet JWKeySet
-			err = json.Unmarshal(responseBytes, &keySet)
-			if err != nil {
-				return err
+
+			if keyFile != "" {
+				keyBytes, err := os.ReadFile(keyFile)
+				if err != nil {
+					return err
+				}
+				err = json.Unmarshal(keyBytes, &keySet)
+				if err != nil {
+					return err
+				}
+			} else {
+				if keyUrl != "" {
+					// use the user-specified keyurl
+				} else if claims.Iss == "https://accounts.google.com" {
+					// get public keys from Google's general accounts service
+					keyUrl = "https://www.googleapis.com/oauth2/v3/certs"
+				} else if strings.HasSuffix(claims.Iss, ".iam.gserviceaccount.com") {
+					// get public keys from Google's service accounts service
+					keyUrl = "https://www.googleapis.com/service_accounts/v1/jwk/" + claims.Sub
+				} else {
+					return fmt.Errorf("unsupported issuer %s", claims.Iss)
+				}
+				fmt.Printf("fetching %s\n", keyUrl)
+				response, err := http.Get(keyUrl)
+				if err != nil {
+					return err
+				}
+				keyBytes, err := io.ReadAll(response.Body)
+				if err != nil {
+					return err
+				}
+				err = json.Unmarshal(keyBytes, &keySet)
+				if err != nil {
+					return err
+				}
 			}
 			b, err = json.MarshalIndent(keySet, "", "  ")
 			if err != nil {
@@ -110,7 +131,7 @@ func verifyCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&format, "format", "json", "output format")
-	cmd.Flags().StringVar(&keyUrl, "keyurl", "json", "key url")
-
+	cmd.Flags().StringVar(&keyUrl, "keyurl", "", "key url")
+	cmd.Flags().StringVar(&keyFile, "keyfile", "", "key file")
 	return cmd
 }
