@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/agentio/q/pkg/jws"
 	"github.com/spf13/cobra"
@@ -43,21 +44,20 @@ func verifyCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			b, err := json.MarshalIndent(claims, "", "  ")
 			if err != nil {
 				return err
 			}
 			fmt.Printf("claims %s\n", string(b))
-
 			b, err = json.MarshalIndent(claims.PrivateClaims, "", "  ")
 			if err != nil {
 				return err
 			}
 			fmt.Printf("private claims %s\n", string(b))
-
+			if time.Now().Unix() > claims.Exp {
+				return errors.New("jwt is expired")
+			}
 			var keySet JWKeySet
-
 			if keyFile != "" {
 				keyBytes, err := os.ReadFile(keyFile)
 				if err != nil {
