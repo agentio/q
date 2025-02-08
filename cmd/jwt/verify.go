@@ -77,7 +77,22 @@ func verifyCmd() *cobra.Command {
 					// get public keys from Google's service accounts service
 					keyUrl = "https://www.googleapis.com/service_accounts/v1/jwk/" + claims.Sub
 				} else {
-					return fmt.Errorf("unsupported issuer %s", claims.Iss)
+					// try to get the keyUrl from .well-known/openid-configurationW
+					wellKnownPath := claims.Iss + "/.well-known/openid-configuration"
+					resp, err := http.Get(wellKnownPath)
+					if err != nil {
+						return fmt.Errorf("unsupported issuer %s", claims.Iss)
+					}
+					b, err := io.ReadAll(resp.Body)
+					if err != nil {
+						return fmt.Errorf("unsupported issuer %s", claims.Iss)
+					}
+					var info OpenIDConfiguration
+					err = json.Unmarshal(b, &info)
+					if err != nil {
+						return fmt.Errorf("unsupported issuer %s", claims.Iss)
+					}
+					keyUrl = info.JwksUri
 				}
 				fmt.Printf("fetching %s\n", keyUrl)
 				response, err := http.Get(keyUrl)
@@ -134,4 +149,9 @@ func verifyCmd() *cobra.Command {
 	cmd.Flags().StringVar(&keyUrl, "keyurl", "", "key url")
 	cmd.Flags().StringVar(&keyFile, "keyfile", "", "key file")
 	return cmd
+}
+
+// There's a lot more to this struct, but for now we just care about the JwksUri
+type OpenIDConfiguration struct {
+	JwksUri string `json:"jwks_uri"`
 }
