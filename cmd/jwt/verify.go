@@ -70,7 +70,7 @@ func verifyCmd() *cobra.Command {
 			} else {
 				if keyUrl != "" {
 					// use the user-specified keyurl
-				} else if claims.Iss == "https://accounts.google.com" {
+				} else if strings.HasSuffix(claims.Iss, "accounts.google.com") {
 					// get public keys from Google's general accounts service
 					keyUrl = "https://www.googleapis.com/oauth2/v3/certs"
 				} else if strings.HasSuffix(claims.Iss, ".iam.gserviceaccount.com") {
