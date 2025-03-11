@@ -54,7 +54,7 @@ func verifyCmd() *cobra.Command {
 				return err
 			}
 			fmt.Printf("private claims %s\n", string(b))
-			if time.Now().Unix() > claims.Exp {
+			if claims.Exp != 0 && time.Now().Unix() > claims.Exp {
 				return errors.New("jwt is expired")
 			}
 			var keySet JWKeySet
