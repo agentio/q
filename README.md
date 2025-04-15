@@ -40,7 +40,6 @@ Available Commands:
   doctor             Verify necessary dependencies and configuration
   help               Help about any command
   inspect            Read API information from compiled file descriptors
-  jwt                Read, verify, and generate JSON Web Tokens
   logging            Write and manage log entries with the Cloud Logging API
   monitoring         Monitor services with the Cloud Monitoring API
   service-control    Control API services with the Service Control API

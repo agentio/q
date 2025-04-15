@@ -6,7 +6,6 @@ import (
 	"github.com/agentio/q/cmd/demo"
 	"github.com/agentio/q/cmd/doctor"
 	"github.com/agentio/q/cmd/inspect"
-	"github.com/agentio/q/cmd/jwt"
 	"github.com/agentio/q/cmd/logging"
 	"github.com/agentio/q/cmd/monitoring"
 	"github.com/agentio/q/cmd/servicecontrol"
@@ -26,7 +25,6 @@ func Cmd() *cobra.Command {
 	cmd.AddCommand(compile.Cmd())
 	cmd.AddCommand(demo.Cmd())
 	cmd.AddCommand(doctor.Cmd())
-	cmd.AddCommand(jwt.Cmd())
 	cmd.AddCommand(logging.Cmd())
 	cmd.AddCommand(monitoring.Cmd())
 	cmd.AddCommand(servicecontrol.Cmd())

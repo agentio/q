@@ -4,6 +4,7 @@ go 1.22.5
 
 require (
 	cloud.google.com/go/apikeys v1.1.10
+	cloud.google.com/go/iam v1.2.0
 	cloud.google.com/go/logging v1.11.0
 	cloud.google.com/go/longrunning v0.6.0
 	cloud.google.com/go/monitoring v1.21.0
@@ -11,8 +12,6 @@ require (
 	cloud.google.com/go/servicemanagement v1.9.11
 	cloud.google.com/go/serviceusage v1.8.9
 	cloud.google.com/go/translate v1.12.0
-	github.com/go-jose/go-jose/v4 v4.0.4
-	github.com/golang/protobuf v1.5.4
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
 	github.com/spf13/cobra v1.8.1
@@ -30,7 +29,6 @@ require (
 	cloud.google.com/go/auth v0.9.3 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.4 // indirect
 	cloud.google.com/go/compute/metadata v0.5.0 // indirect
-	cloud.google.com/go/iam v1.2.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
